@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Registration Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-indicators">
+                <div class="step-indicator active" data-step="1">1</div>
+                <div class="step-indicator" data-step="2">2</div>
+                <div class="step-indicator" data-step="3">3</div>
+                <div class="step-indicator" data-step="4">4</div>
+                <div class="step-indicator" data-step="5">5</div>
+            </div>
+        </div>
+
+        <!-- Form Steps -->
+        <form id="hackathonForm" class="multi-step-form">
+
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step1">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="emoji-container">
+                            <span class="emoji bounce">👋</span>
+                        </div>
+                        <h2 class="step-title">Welcome to TechHack 2025!</h2>
+                        <p class="step-description">Let's start with your personal information</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">
+                            <span class="emoji">📝</span>
+                            First Name *
+                        </label>
+                        <input type="text" id="firstName" name="firstName" class="form-input"
+                            placeholder="Enter your first name" required>
+                        <div class="error-message" id="firstNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">
+                            <span class="emoji">📝</span>
+                            Last Name *
+                        </label>
+                        <input type="text" id="lastName" name="lastName" class="form-input"
+                            placeholder="Enter your last name" required>
+                        <div class="error-message" id="lastNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">
+                            <span class="emoji">📱</span>
+                            Phone Number *
+                        </label>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 123-4567"
+                            required>
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <span class="emoji">✉️</span>
+                            Email ID *
+                        </label>
+                        <input type="email" id="email" name="email" class="form-input"
+                            placeholder="your.email@example.com" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    <button type="button" class="btn btn-primary next-btn" onclick="nextStep()">
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Academic Information -->
+            <div class="form-step" id="step2">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="emoji-container">
+                            <span class="emoji pulse">🎓</span>
+                        </div>
+                        <h2 class="step-title">Academic Details</h2>
+                        <p class="step-description">Tell us about your academic background</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="collegeName" class="form-label">
+                            <span class="emoji">🏫</span>
+                            College Name *
+                        </label>
+                        <input type="text" id="collegeName" name="collegeName" class="form-input"
+                            placeholder="Enter your college name" required>
+                        <div class="error-message" id="collegeNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="department" class="form-label">
+                            <span class="emoji">📚</span>
+                            Department *
+                        </label>
+                        <input type="text" id="department" name="department" class="form-input"
+                            placeholder="Computer Science, Electrical, etc." required>
+                        <div class="error-message" id="departmentError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="year" class="form-label">
+                            <span class="emoji">📅</span>
+                            Year *
+                        </label>
+                        <select id="year" name="year" class="form-select" required>
+                            <option value="">Select your year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                            <option value="postgrad">Post Graduate</option>
+                        </select>
+                        <div class="error-message" id="yearError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn btn-primary next-btn" onclick="nextStep()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Team Information -->
+            <div class="form-step" id="step3">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="emoji-container">
+                            <span class="emoji rotate">👥</span>
+                        </div>
+                        <h2 class="step-title">Team or Solo?</h2>
+                        <p class="step-description">Choose your participation mode</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="solo" name="participationType" value="solo"
+                                    onchange="toggleTeamDetails()">
+                                <label for="solo" class="radio-label">
+                                    <span class="emoji">🚀</span>
+                                    <span class="option-text">
+                                        <strong>Solo Participation</strong>
+                                        <small>I want to participate individually</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="team" name="participationType" value="team"
+                                    onchange="toggleTeamDetails()">
+                                <label for="team" class="radio-label">
+                                    <span class="emoji">👥</span>
+                                    <span class="option-text">
+                                        <strong>Team Participation</strong>
+                                        <small>I want to participate with a team</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="participationTypeError"></div>
+                    </div>
+
+                    <div id="teamDetails" class="team-details hidden">
+                        <div class="form-group">
+                            <label for="teamSize" class="form-label">
+                                <span class="emoji">🔢</span>
+                                Number of Team Members (including you) *
+                            </label>
+                            <select id="teamSize" name="teamSize" class="form-select"
+                                onchange="generateTeamMemberFields()">
+                                <option value="">Select team size</option>
+                                <option value="2">2 Members</option>
+                                <option value="3">3 Members</option>
+                                <option value="4">4 Members</option>
+                                <option value="5">5 Members</option>
+                            </select>
+                            <div class="error-message" id="teamSizeError"></div>
+                        </div>
+
+                        <div id="teamMemberFields"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn btn-primary next-btn" onclick="nextStep()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Document Upload -->
+            <div class="form-step" id="step4">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="emoji-container">
+                            <span class="emoji wiggle">📄</span>
+                        </div>
+                        <h2 class="step-title">Upload Documents</h2>
+                        <p class="step-description">Please upload the required documents</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf1" class="form-label">
+                            <span class="emoji">📋</span>
+                            Concept Proposal (PDF) *
+                        </label>
+                        <div class="file-upload-area">
+                            <input type="file" id="pdf1" name="pdf1" accept=".pdf" class="file-input" required>
+                            <label for="pdf1" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload or drag and drop</span>
+                                <small>PDF files only, max 10MB</small>
+                            </label>
+                        </div>
+                        <div class="error-message" id="pdf1Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf2" class="form-label">
+                            <span class="emoji">📊</span>
+                            Presentation (PPT/PDF)
+                        </label>
+                        <div class="file-upload-area">
+                            <input type="file" id="pdf2" name="pdf2" accept=".pdf,.ppt,.pptx" class="file-input">
+                            <label for="pdf2" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload or drag and drop</span>
+                                <small>PDF or PowerPoint files, max 10MB</small>
+                            </label>
+                        </div>
+                        <div class="error-message" id="pdf2Error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf3" class="form-label">
+                            <span class="emoji">📎</span>
+                            Additional Document
+                        </label>
+                        <div class="file-upload-area">
+                            <input type="file" id="pdf3" name="pdf3" accept=".pdf,.doc,.docx" class="file-input">
+                            <label for="pdf3" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload or drag and drop</span>
+                                <small>PDF or Word files, max 10MB</small>
+                            </label>
+                        </div>
+                        <div class="error-message" id="pdf3Error"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn btn-primary next-btn" onclick="nextStep()">
+                            Continue <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Confirmation -->
+            <div class="form-step" id="step5">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="emoji-container">
+                            <span class="emoji tada">✅</span>
+                        </div>
+                        <h2 class="step-title">Confirm Your Registration</h2>
+                        <p class="step-description">Please review your information before submitting</p>
+                    </div>
+
+                    <div class="confirmation-summary" id="confirmationSummary">
+                        <!-- Summary will be populated by JavaScript -->
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-option agreement">
+                            <input type="checkbox" id="agreement" name="agreement" required>
+                            <label for="agreement" class="checkbox-label">
+                                I agree to the <a href="#" class="link">Terms & Conditions</a> and confirm that all
+                                information provided is accurate.
+                            </label>
+                        </div>
+                        <div class="error-message" id="agreementError"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="submit" class="btn btn-success submit-btn">
+                            <i class="fas fa-check"></i> Complete Registration
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-screen hidden">
+            <div class="success-content">
+                <div class="success-animation">
+                    <div class="checkmark-circle">
+                        <div class="checkmark"></div>
+                    </div>
+                </div>
+                <h2>🎉 Registration Successful!</h2>
+                <p>Congratulations! You have successfully registered for BrillHack 2025.</p>
+                <div class="success-details">
+                    <div class="detail-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Confirmation email sent to your registered email</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Event Date: March 15-17, 2025</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Location: Tech Innovation Center</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Check-in: 9:00 AM, March 15th</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Processing your registration...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
