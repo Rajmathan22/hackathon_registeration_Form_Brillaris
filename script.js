@@ -301,16 +301,67 @@ function setupFileUploads() {
 }
 
 function setupFormValidation() {
-    // Real-time validation
-    document.querySelectorAll('input, select').forEach(field => {
+    const fields = document.querySelectorAll('.form-input, .form-select');
+    fields.forEach(field => {
         field.addEventListener('blur', () => validateField(field));
         field.addEventListener('input', () => {
-            const errorElement = document.getElementById(field.name + 'Error');
-            if (errorElement) {
-                errorElement.classList.remove('show');
+            clearError(field);
+            // Real-time validation for email and phone
+            if (field.type === 'email' || field.type === 'tel') {
+                debounce(() => checkFieldAvailability(field), 500)();
             }
         });
     });
+}
+
+// Debounce function to limit API calls
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Check if email or phone is already registered
+async function checkFieldAvailability(field) {
+    if (!field.value.trim()) return;
+
+    let type = '';
+    if (field.type === 'email') {
+        type = 'email';
+        if (!isValidEmail(field.value)) return;
+    } else if (field.type === 'tel') {
+        type = 'phone';
+        if (!isValidPhone(field.value)) return;
+    } else {
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('type', type);
+        formData.append('value', field.value);
+
+        const response = await fetch('validate.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.exists) {
+            showError(field, result.message);
+        } else {
+            clearError(field);
+        }
+    } catch (error) {
+        console.error('Validation error:', error);
+    }
 }
 
 function saveCurrentStepData() {
@@ -496,28 +547,98 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!validateCurrentStep()) return;
 
         saveCurrentStepData();
+        generateConfirmationSummary();
 
         // Show loading
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.classList.remove('hidden');
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Prepare form data for submission
+            const submissionFormData = new FormData();
 
-            // Show success
-            showSuccessMessage();
-            clearSavedData();
+            // Add all form fields
+            Object.keys(formData).forEach(key => {
+                if (formData[key] !== null && formData[key] !== undefined) {
+                    submissionFormData.append(key, formData[key]);
+                }
+            });
+
+            // Add team member data if team participation
+            if (formData.participationType === 'team' && formData.teamSize) {
+                for (let i = 1; i < parseInt(formData.teamSize); i++) {
+                    const memberData = formData[`teamMember${i}`];
+                    if (memberData) {
+                        Object.keys(memberData).forEach(field => {
+                            submissionFormData.append(`teamMember${i}${field.charAt(0).toUpperCase() + field.slice(1)}`, memberData[field]);
+                        });
+                    }
+                }
+            }
+
+            // Add file uploads
+            const fileInputs = ['pdf1', 'pdf2', 'pdf3'];
+            fileInputs.forEach(inputId => {
+                const fileInput = document.getElementById(inputId);
+                if (fileInput && fileInput.files.length > 0) {
+                    submissionFormData.append(inputId, fileInput.files[0]);
+                }
+            });
+
+            // Add agreement
+            const agreementCheckbox = document.getElementById('agreement');
+            submissionFormData.append('agreement', agreementCheckbox.checked ? 'true' : 'false');
+
+            // Submit to PHP backend
+            const response = await fetch('register.php', {
+                method: 'POST',
+                body: submissionFormData
+            });
+
+            // Check if the response is ok
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const textResponse = await response.text();
+                console.error('Non-JSON response:', textResponse);
+                throw new Error('Server returned invalid response format');
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Show success with registration ID
+                showSuccessMessage(result.registration_id);
+                clearSavedData();
+            } else {
+                throw new Error(result.error || 'Registration failed');
+            }
 
         } catch (error) {
-            alert('Registration failed. Please try again.');
+            console.error('Registration error:', error);
+            
+            // More detailed error messages
+            let errorMessage = 'Registration failed: ';
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                errorMessage += 'Cannot connect to server. Please check if the server is running and try again.';
+            } else if (error.message.includes('HTTP error')) {
+                errorMessage += `Server error (${error.message}). Please try again later.`;
+            } else {
+                errorMessage += error.message;
+            }
+            
+            alert(errorMessage);
         } finally {
             loadingOverlay.classList.add('hidden');
         }
     });
 });
 
-function showSuccessMessage() {
+function showSuccessMessage(registrationId = null) {
     const form = document.getElementById('hackathonForm');
     const successScreen = document.getElementById('successMessage');
     const progressContainer = document.querySelector('.progress-container');
@@ -525,6 +646,18 @@ function showSuccessMessage() {
     form.style.display = 'none';
     progressContainer.style.display = 'none';
     successScreen.classList.remove('hidden');
+
+    // Add registration ID to success message if provided
+    if (registrationId) {
+        const successContent = successScreen.querySelector('.success-content');
+        const registrationIdElement = document.createElement('div');
+        registrationIdElement.className = 'detail-item';
+        registrationIdElement.innerHTML = `
+            <i class="fas fa-id-card"></i>
+            <span>Registration ID: <strong>#${registrationId}</strong></span>
+        `;
+        successContent.querySelector('.success-details').appendChild(registrationIdElement);
+    }
 
     // Add show class for proper animation and visibility
     setTimeout(() => {
