@@ -155,6 +155,13 @@ function validateField(field) {
                 }
             }
             break;
+
+        case 'projectCategory':
+            if (!value) {
+                showError('projectCategoryError', 'Please select a project category');
+                isValid = false;
+            }
+            break;
     }
 
     return isValid;
@@ -505,6 +512,19 @@ function generateConfirmationSummary() {
         
         <div class="summary-section">
             <div class="summary-title">
+                <i class="fas fa-lightbulb"></i>
+                Project Information
+            </div>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <span class="summary-label">Project Category:</span>
+                    <span class="summary-value">${getProjectCategoryText(formData.projectCategory)}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-title">
                 <i class="fas fa-file-pdf"></i>
                 Documents
             </div>
@@ -536,6 +556,28 @@ function getYearText(year) {
         case '4': return '4th Year';
         case 'postgrad': return 'Post Graduate';
         default: return '';
+    }
+}
+
+function getProjectCategoryText(category) {
+    switch (category) {
+        case 'iot': return 'Internet of Things (IoT)';
+        case 'mobile-app': return 'Mobile Applications';
+        case 'web-app': return 'Web Applications';
+        case 'social-media': return 'Social Media Applications';
+        case 'ai-ml': return 'Artificial Intelligence & Machine Learning';
+        case 'blockchain': return 'Blockchain & Cryptocurrency';
+        case 'cybersecurity': return 'Cybersecurity';
+        case 'data-science': return 'Data Science & Analytics';
+        case 'ar-vr': return 'Augmented/Virtual Reality';
+        case 'gaming': return 'Gaming & Entertainment';
+        case 'fintech': return 'Financial Technology';
+        case 'healthtech': return 'Health Technology';
+        case 'edtech': return 'Educational Technology';
+        case 'e-commerce': return 'E-commerce Solutions';
+        case 'sustainability': return 'Sustainability & Green Tech';
+        case 'other': return 'Other';
+        default: return 'Not selected';
     }
 }
 
@@ -620,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } catch (error) {
             console.error('Registration error:', error);
-            
+
             // More detailed error messages
             let errorMessage = 'Registration failed: ';
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
@@ -630,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 errorMessage += error.message;
             }
-            
+
             alert(errorMessage);
         } finally {
             loadingOverlay.classList.add('hidden');

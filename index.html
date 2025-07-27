@@ -259,6 +259,35 @@
                         </div>
                         <div class="error-message" id="pdf3Error"></div>
                     </div>
+
+                    <!-- Project Category -->
+                    <div class="form-group">
+                        <label for="projectCategory" class="form-label">
+                            <span class="emoji">🏷️</span>
+                            Project Category *
+                        </label>
+                        <select id="projectCategory" name="projectCategory" class="form-select" required>
+                            <option value="">Select project category</option>
+                            <option value="iot">Internet of Things (IoT)</option>
+                            <option value="mobile-app">Mobile Applications</option>
+                            <option value="web-app">Web Applications</option>
+                            <option value="social-media">Social Media Applications</option>
+                            <option value="ai-ml">Artificial Intelligence & Machine Learning</option>
+                            <option value="blockchain">Blockchain & Cryptocurrency</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                            <option value="data-science">Data Science & Analytics</option>
+                            <option value="ar-vr">Augmented/Virtual Reality</option>
+                            <option value="gaming">Gaming & Entertainment</option>
+                            <option value="fintech">Financial Technology</option>
+                            <option value="healthtech">Health Technology</option>
+                            <option value="edtech">Educational Technology</option>
+                            <option value="e-commerce">E-commerce Solutions</option>
+                            <option value="sustainability">Sustainability & Green Tech</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message" id="projectCategoryError"></div>
+                    </div>
+
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary prev-btn" onclick="prevStep()">
                             <i class="fas fa-arrow-left"></i> Back
